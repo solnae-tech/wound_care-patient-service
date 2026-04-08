@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables (managed via docker-compose env_file)
+app/.env
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+
+# Byte-compiled
+*.pyc
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
