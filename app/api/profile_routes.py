@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from db.database import get_db
 from schema.schemas import ProfileUpdate, ProfileOut
@@ -15,7 +15,7 @@ def get_profile(user_id: int, db: Session = Depends(get_db)):
     return profile
 
 
-@router.put("/{user_id}", response_model=ProfileOut)
+@router.patch("/{user_id}", response_model=ProfileOut)
 def update_profile(user_id: int, data: ProfileUpdate, db: Session = Depends(get_db)):
     try:
         return update_profile_service(db, user_id, data)
@@ -23,10 +23,10 @@ def update_profile(user_id: int, data: ProfileUpdate, db: Session = Depends(get_
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_profile(user_id: int, db: Session = Depends(get_db)):
     try:
         delete_profile_service(db, user_id)
-        return {"message": "Deleted"}
+        return None
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
