@@ -1,0 +1,7 @@
+.venv/
+app/genrate_models.py
+__pycache__/
+.env
+.idea/
+.vscode/
+venv/
