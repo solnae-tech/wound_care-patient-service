@@ -1,28 +1,18 @@
-# ---- Base image ----
-FROM python:3.11-slim
+FROM python:3.10-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-# Set working directory inside container
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# Install system dependencies (needed by psycopg2-binary)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy and install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy the app source code
 COPY app/ .
 
-# Expose the port FastAPI will run on
-EXPOSE 8000
+# Cloud Run expects 8080
+EXPOSE 8080
 
-# Run the application with uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
